@@ -68,11 +68,12 @@
 # type definitions
 
 ## /types/trip.js
+- rather than defining typescript types, define a generic schema that can be used for all purposes, including, if necessary, generating typescript type definitions, graphql type definitions and validations that cannot be achieved through typescript
 
 ```javascript
 const trip = {
   label: 'trip',
-  desc: 'a trip planned on taken by a vehicle',
+  desc: 'a trip planned or taken by a vehicle',
   fields: {
     id: {
       label: 'Trip ID',
@@ -108,4 +109,12 @@ const trip = {
   }
 };
 
+const stop = {
+  label: 'Stop',
+  description: 'a stop within a trip',
+  fields: {
+    lat: {},
+    long: {}
+  }
+};
 ```
