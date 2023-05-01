@@ -117,7 +117,7 @@ const stop = {
 
 ## app/routes/trip.js
 ```javascript
-import {onNewTripRequest} from 'engine/trip/event/onNewTripRequest';
+import onNewTripRequest from 'engine/trip/event/onNewTripRequest';
 import {sendAsHttp} from 'utils';
 
 express.post('/trips', (req, res) => {
@@ -134,13 +134,13 @@ express.post('/trips', (req, res) => {
 ```javascript
 
 // shared imports
-import {context} from 'utils';
-import {queries} from 'queries';
-import {emit, emitError} from 'utils';
+import {context, emit, emitError} from 'utils';
+import queries from 'queries';
+import events from 'events;
 
 // imports within module - not to be imported from other modules
-import {newTrip} from '../logic/newTrip';
-import {insertTrip} from '../mutations/insertTrip';
+import newTrip from '../logic/newTrip';
+import insertTrip from '../mutations/insertTrip';
 
 const onNewTripRequest = async ({passengerId, stops}, context) => {
   try {
@@ -164,5 +164,47 @@ const onNewTripRequest = async ({passengerId, stops}, context) => {
   } catch (error) {
     return emitError(events.NEW_TRIP, {error}); 
   }
+};
+```
+
+# effects (event listeners)
+
+## engine/driver/init.js
+
+```javascript
+import {events} from 'events;
+
+import onNewTrip from './events/onNewTrip';
+
+events.addEventListener(events.NEW_TRIP, onNewTrip);
+
+```
+
+## engine/driver/events/onNewTrip
+
+```javascript
+// on new trip, notify drivers
+const onNewTrip = async ({trip}) => {
+  try {
+    context.create();
+    context.newTrip = trip;
+    context.nearbyDrivers = await query.getFreeDriversByProximity(trip.stops[0]);
+
+    // generate notifications for each driver
+    let notifications = [];
+    for (let i = 0; i < context.nearbyDrivers.length; i++) {
+      let driver = context.nearbyDrivers[i];
+      notifications.push(newDriverNotification(trip, driver));
+    }
+
+    // send notifications
+    for (let i = 0; i < notifications.length; i++) {
+      sendDriverNotification(notifications[i]);
+    }
+    
+    return emit(events.SEND_DRIVER_NOTIFICATIONS, {notifications});
+  } catch(error) {
+  }
+  
 };
 ```
