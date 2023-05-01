@@ -10,6 +10,7 @@
 - only the primary outputs are sent/written in the main event handler
 - secondary effects are not written in-line, but triggered via event listeners
 - centrally declared schema / metadata defintions shared across all modules
+- CQRS - query (read-only) layer is shared across all modules, but writes/mutations are private to modules and can only be invoked by module event handlers
 
 # example directory structure
 
@@ -49,10 +50,6 @@
     /mutations
       insertTrip
       updateTrip
-    /queries
-      findTripById
-      findTripsByPassenger
-      findTripsByDriver
   /driver
     /events
       onDriverOnline
@@ -60,7 +57,10 @@
       driverOnline
     /mutations
       updateDriver
-    /queries
-      findDriverById
-      findDriversByLocation
+/queries
+  findTripById
+  findTripsByPassenger
+  findTripsByDriver  
+  findDriverById
+  findDriversByLocation
 ```
