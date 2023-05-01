@@ -64,3 +64,24 @@
   findDriverById
   findDriversByLocation
 ```
+
+# type definitions
+
+## /types/trip.js
+
+```javascript
+const trip = {
+  label: 'trip',
+  desc: 'a trip planned on taken by a vehicle'
+  fields: {
+    id: {
+      label: 'Trip ID',
+      type: 'string',
+      primary: true
+    },
+    passengerId: {
+    }
+  }
+};
+
+```
