@@ -15,29 +15,23 @@
 # example directory structure
 
 ```
-/types
+/types // type definitions are shared across modules
   trip
   driver
-/generated
-  /graphql
-    trip
-    driver
-  /typescript
-    trip
-    driver
-/data
-  connect
-  query
-  insert
-  update
-  delete
-/utils
-  validate
-  emit
-  emitError
-  listen
-  log
-/engine
+  /generated
+    /graphql
+      trip
+      driver
+    /typescript
+      trip
+      driver
+/queries // queries are shared across modules
+  findTripById
+  findTripsByPassenger
+  findTripsByDriver  
+  findDriverById
+  findDriversByLocation
+/engine // an application 'engine' is a collection of modules
   /trip
     /events
       onNewTripRequest
@@ -57,12 +51,12 @@
       driverOnline
     /mutations
       updateDriver
-/queries
-  findTripById
-  findTripsByPassenger
-  findTripsByDriver  
-  findDriverById
-  findDriversByLocation
+/utils
+  validate
+  emit
+  emitError
+  listen
+  log
 ```
 
 # type definitions
