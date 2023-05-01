@@ -72,14 +72,38 @@
 ```javascript
 const trip = {
   label: 'trip',
-  desc: 'a trip planned on taken by a vehicle'
+  desc: 'a trip planned on taken by a vehicle',
   fields: {
     id: {
       label: 'Trip ID',
       type: 'string',
-      primary: true
+      primary: true,
+      desc: 'unique, system generated id for a trip'
     },
     passengerId: {
+      label: 'Passenger ID',
+      type: 'string',
+      refers: 'Passenger',
+      required: true,
+      desc: 'id of the passenger who requested the trip'
+    },
+    date: {
+      label: 'Trip Date',
+      type: 'date',
+      required: true,
+      desc: 'date and time on which the trip was requested'
+    },
+    stops: {
+      label: 'Stops',
+      type: 'array',
+      of: 'stop'
+    }
+  },
+  functions: {
+    validateStops: (trip, context) => {
+      if (trip.stops.length < 2) throw new Error('a trip must have at least a start and a destination');
+      if (distance(trip.stops[0], trip.stops[trip.stops.length - 1]) > context.configs.maxTripDistance)
+        throw new Error('trip too long');
     }
   }
 };
