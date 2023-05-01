@@ -112,3 +112,56 @@ const stop = {
   }
 };
 ```
+
+# event handlers
+
+## app/routes/trip.js
+```javascript
+import {onNewTripRequest} from 'engine/trip/event/onNewTripRequest';
+import {sendAsHttp} from 'utils';
+
+express.post('/trips', (req, res) => {
+  let e = await onNewTripRequest({
+    passengerId: req.passengerId,
+    stops: req.stops
+  });
+  sendAsHttp(res, e);
+});
+```
+
+## engine/trip/event/onNewTripRequest.js
+
+// shared imports
+import {context} from 'utils';
+import {queries} from 'queries';
+import {emit, emitError} from 'utils';
+
+// imports within module - not to be imported from other modules
+import {newTrip} from '../logic/newTrip';
+import {insertTrip} from '../mutations/insertTrip';
+
+```javascript
+const onNewTripRequest = async ({passengerId, stops}, context) => {
+  try {
+    // input block - eager load all contextual data needed for the entire lifetime of the event
+    context.create();
+    context.passengers = { [passengerId]: await query.findPassengerById(passengerId) };
+    context.trips = await query.findTripsByPassengerId(passengerId);
+    context.date = new Date();
+
+    // processing block - validations, calculations and generation of object(s) to be saved to db
+    let newTrip = newTrip({
+      passengerId,
+      stops
+    }, context);
+    
+    // primary output block (e.g. db save)
+    insertTrip(newTrip);
+    
+    // all other side effects via event listeners (audit trail, notifications, updates to other entities)
+    return emit(events.NEW_TRIP, {trip: newTrip}); 
+  } catch (error) {
+    return emitError(events.NEW_TRIP, {error}); 
+  }
+};
+```
