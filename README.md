@@ -131,6 +131,8 @@ express.post('/trips', (req, res) => {
 
 ## engine/trip/event/onNewTripRequest.js
 
+```javascript
+
 // shared imports
 import {context} from 'utils';
 import {queries} from 'queries';
@@ -140,7 +142,6 @@ import {emit, emitError} from 'utils';
 import {newTrip} from '../logic/newTrip';
 import {insertTrip} from '../mutations/insertTrip';
 
-```javascript
 const onNewTripRequest = async ({passengerId, stops}, context) => {
   try {
     // input block - eager load all contextual data needed for the entire lifetime of the event
