@@ -182,7 +182,7 @@ const onNewTripRequest = async ({passengerId, stops}, context) => {
 // driver/init module contains one-time initialisations related to the driver module
 
 import {events} from 'events;
-import onNewTrip from './events/onNewTrip';
+import onNewTrip from '../events/onNewTrip';
 
 events.addEventListener(events.NEW_TRIP, onNewTrip); // for notifying drivers of new trip request
 ```
@@ -190,6 +190,8 @@ events.addEventListener(events.NEW_TRIP, onNewTrip); // for notifying drivers of
 ## engine/driver/events/onNewTrip
 
 ```javascript
+import sendDriverNotification from '../mutations/sendDriverNotification';
+
 // on new trip, notify drivers
 const onNewTrip = async ({trip}) => {
   try {
@@ -211,6 +213,7 @@ const onNewTrip = async ({trip}) => {
     
     return emit(events.SEND_DRIVER_NOTIFICATIONS, {notifications});
   } catch(error) {
+    return emitError(events.SEND_DRIVER_NOTIFICATIONS, {error});
   }
   
 };
