@@ -119,9 +119,13 @@ const stop = {
 
 ## app/routes/trip.js
 ```javascript
+// routes/trip module implements all the http route handlers for 
+// trip related api calls
+
 import onNewTripRequest from 'engine/trip/event/onNewTripRequest';
 import {sendAsHttp} from 'utils';
 
+// POST /trips creates a new trip
 express.post('/trips', (req, res) => {
   let e = await onNewTripRequest({
     passengerId: req.passengerId,
@@ -144,6 +148,7 @@ import events from 'events;
 import newTrip from '../logic/newTrip';
 import insertTrip from '../mutations/insertTrip';
 
+// onNewTripRequest handles a request to create a new trip request
 const onNewTripRequest = async ({passengerId, stops}, context) => {
   try {
     // input block - eager load all contextual data needed for the entire lifetime of the event
@@ -174,12 +179,12 @@ const onNewTripRequest = async ({passengerId, stops}, context) => {
 ## engine/driver/init.js
 
 ```javascript
-import {events} from 'events;
+// driver/init module contains one-time initialisations related to the driver module
 
+import {events} from 'events;
 import onNewTrip from './events/onNewTrip';
 
-events.addEventListener(events.NEW_TRIP, onNewTrip);
-
+events.addEventListener(events.NEW_TRIP, onNewTrip); // for notifying drivers of new trip request
 ```
 
 ## engine/driver/events/onNewTrip
