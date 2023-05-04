@@ -17,24 +17,24 @@
 an API for a ride sharing app
 
 ```
-/types // type definitions are shared across modules
-  trip
+/types           // single source of truth for schema; shared across modules
+  trip           
   driver
-  /generated
+  /generated     // all other type defintions are generated from above
     /graphql
       trip
       driver
     /typescript
       trip
       driver
-/queries // queries are shared across modules
+/queries         // queries are shared across modules
   findTripById
   findTripsByPassenger
   findTripsByDriver  
   findDriverById
   findDriversByLocation
-/engine // an application 'engine' is a collection of modules
-  /trip
+/engine          // an application 'engine' is a collection of modules
+  /trip          // a module is a collection of even handlers, logic and mutations related to a business entity
     /events
       onNewTripRequest
       onAcceptTrip
@@ -46,7 +46,7 @@ an API for a ride sharing app
     /mutations
       insertTrip
       updateTrip
-  /driver
+  /driver       // anotoher module
     /events
       onDriverOnline
     /logic
